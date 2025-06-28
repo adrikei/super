@@ -86,16 +86,16 @@
             currentData = allData.filter(item =>
                 item.product_name && stripDiacritics(item.product_name.toLowerCase()).includes(searchTerm)
             );
-            // console.log(currentData[0])
-            const listItems = currentData.map(mapToString).map(text => `<li class="cursor-pointer hover:bg-gray-200 p-1">${text}</li>`)
-            document.getElementById('resultsArea').innerHTML = ''
-            document.getElementById('resultsArea').innerHTML = listItems.join('');
-
             // Update chart
-            const sortedFiltered = [...currentData].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const sortedFiltered = currentData.sort((a, b) => new Date(a.date) - new Date(b.date));
             chart.data.labels = sortedFiltered.map(item => item.date);
             chart.data.datasets[0].data = sortedFiltered.map(item => item.price);
             chart.update();
+
+            // console.log(currentData[0])
+            const listItems = currentData.map(mapToString).map(text => `<li class="cursor-pointer hover:bg-gray-200 p-1">${text}</li>`)
+            document.getElementById('resultsArea').innerHTML = listItems.join('');
+
         });
 
         // Load data from file
