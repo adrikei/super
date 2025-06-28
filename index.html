@@ -84,7 +84,7 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = stripDiacritics(e.target.value.toLowerCase());
             currentData = allData.filter(item =>
-                item.product_name && stripDiacritics(item.product_name.toLowerCase()).includes(searchTerm)
+                item.product_name && item.price && stripDiacritics(item.product_name.toLowerCase()).includes(searchTerm)
             );
             // Update chart
             const sortedFiltered = currentData.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -95,6 +95,23 @@
             // console.log(currentData[0])
             const listItems = currentData.map(mapToString).map(text => `<li class="cursor-pointer hover:bg-gray-200 p-1">${text}</li>`)
             document.getElementById('resultsArea').innerHTML = listItems.join('');
+            
+            // Auto-select first result
+            if (currentData.length > 0) {
+                const firstItem = currentData[0];
+                const imagePath = `input/${firstItem.supermarket}/products/dated/few/done/${firstItem.date}_${firstItem.supermarket} - ${firstItem.hash}.jpg`;
+                document.getElementById('imageArea').innerHTML = `<img src="${encodeURI(imagePath)}" class="max-w-full h-auto cursor-pointer" onclick="showModal('${encodeURI(imagePath)}')">`;
+                
+                // Highlight first item
+                setTimeout(() => {
+                    const firstLi = document.querySelector('#resultsArea li');
+                    if (firstLi) {
+                        document.querySelectorAll('#resultsArea li').forEach(li => li.classList.remove('bg-blue-200', 'bg-blue-600'));
+                        const isDarkMode = document.getElementById('nightModeToggle').checked;
+                        firstLi.classList.add(isDarkMode ? 'bg-blue-600' : 'bg-blue-200');
+                    }
+                }, 0);
+            }
 
         });
 
