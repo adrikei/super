@@ -21,7 +21,20 @@
         </div>
     </div>
     
+    <!-- Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50" onclick="hideModal()">
+        <img id="modalImage" class="max-w-full max-h-full">
+    </div>
+    
     <script>
+        function showModal(imagePath) {
+            document.getElementById('modalImage').src = imagePath;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        
+        function hideModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
         // Line Chart
         const chart = new Chart(document.getElementById('lineChart'), {
             type: 'line',
@@ -100,7 +113,7 @@
                     const item = currentData[lineIndex];
                     console.log(lineIndex, e.target.innerHTML, item);
                     const imagePath = `input/${item.supermarket}/products/dated/few/done/${item.date}_${item.supermarket} - ${item.hash}.jpg`;
-                    document.getElementById('imageArea').innerHTML = `<img src="${encodeURI(imagePath)}" class="max-w-full h-auto">`;
+                    document.getElementById('imageArea').innerHTML = `<img src="${encodeURI(imagePath)}" class="max-w-full h-auto cursor-pointer" onclick="showModal('${encodeURI(imagePath)}')">`;
                 }
             }
         });
