@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-8 h-screen">
@@ -64,6 +65,10 @@
                         }
                     },
                     x: {
+                        type: 'time',
+                        time: {
+                            parser: 'yyyy-MM-dd'
+                        },
                         title: {
                             display: true,
                             text: 'Date'
@@ -90,8 +95,7 @@
             });
             // Update chart
             const sortedFiltered = currentData.sort((a, b) => new Date(a.date) - new Date(b.date));
-            chart.data.labels = sortedFiltered.map(item => item.date);
-            chart.data.datasets[0].data = sortedFiltered.map(item => item.price);
+            chart.data.datasets[0].data = sortedFiltered.map(item => ({ x: item.date, y: item.price }));
             chart.update();
 
             // console.log(currentData[0])
