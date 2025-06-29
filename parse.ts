@@ -1,6 +1,7 @@
 import fs from 'fs'
 const inputFile = './input/beirariosm-12b.out'
 const outputFile = './beirariosm-12b-parsed.out'
+const errFile = './beirariosm-12b-error.out'
 const content = fs.readFileSync(inputFile, 'utf-8').split('\n')
 const list = content.map(c => (JSON.parse(c)))
 const filtered = list.filter(e => !!e.item_name).filter(e => !!e.price)
@@ -54,17 +55,23 @@ async function askLLM(text: string, model: string = model12b) {
 }
 
 async function ask(f: any) {
-    const stringified = JSON.stringify(f)
-    const result = (await askLLM(stringified)).choices[0].message.content.replace('```json', '').replace('```', '')
-    const date = f.file.substring(0, 10)
-    const firstSpaceIndex = f.file.indexOf(' ')
-    const supermarket = f.file.substring(11, firstSpaceIndex)
-    const secondSpaceIndex = f.file.indexOf(' ', firstSpaceIndex + 2)
-    const periodIndex = f.file.indexOf('.')
-    const hash = f.file.substring(secondSpaceIndex + 1, periodIndex)
-    const toAppend = JSON.stringify({...JSON.parse(result), date, supermarket, hash})
-    fs.appendFileSync(outputFile, `${toAppend}\n`)
-    // console.log(toAppend)
+    try {
+        const stringified = JSON.stringify(f)
+        const result = (await askLLM(stringified)).choices[0].message.content.replace('```json', '').replace('```', '')
+        const date = f.file.substring(0, 10)
+        const firstSpaceIndex = f.file.indexOf(' ')
+        const supermarket = f.file.substring(11, firstSpaceIndex)
+        const secondSpaceIndex = f.file.indexOf(' ', firstSpaceIndex + 2)
+        const periodIndex = f.file.indexOf('.')
+        const hash = f.file.substring(secondSpaceIndex + 1, periodIndex)
+        const toAppend = JSON.stringify({...JSON.parse(result), date, supermarket, hash})
+        fs.appendFileSync(outputFile, `${toAppend}\n`)
+        // console.log(toAppend)
+    } catch (err) {
+        const toAppend = JSON.stringify(f)
+        fs.appendFileSync(errFile, `${toAppend}\n`)
+        console.log("ERROR", f)
+    }
 }
 
 for (const input of filtered){

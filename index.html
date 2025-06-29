@@ -82,10 +82,12 @@
 
         // Filter and display results
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            const searchTerm = stripDiacritics(e.target.value.toLowerCase());
-            currentData = allData.filter(item =>
-                item.product_name && item.price && stripDiacritics(item.product_name.toLowerCase()).includes(searchTerm)
-            );
+            const searchTerms = e.target.value.split(',').map(term => stripDiacritics(term.trim().toLowerCase())).filter(term => term);
+            currentData = allData.filter(item => {
+                if (!item.product_name || !item.price) return false;
+                const itemString = mapToString(item).toLowerCase();
+                return searchTerms.every(term => itemString.includes(term));
+            });
             // Update chart
             const sortedFiltered = currentData.sort((a, b) => new Date(a.date) - new Date(b.date));
             chart.data.labels = sortedFiltered.map(item => item.date);
