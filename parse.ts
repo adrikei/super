@@ -1,11 +1,21 @@
 import fs from 'fs'
-const inputFile = './input/beirariosm-12b.out'
-const outputFile = './beirariosm-12b-parsed.out'
-const errFile = './beirariosm-12b-error.out'
+
+const inputFile = './input/dbsupermercados/dbsupermercados.out'
+const outputFile = './dbsupermercados-12b-parsed.out'
+const errFile = './dbsupermercados-12b-error.out'
 const content = fs.readFileSync(inputFile, 'utf-8').split('\n')
 const list = content.map(c => (JSON.parse(c)))
-const filtered = list.filter(e => !!e.item_name).filter(e => !!e.price)
-const missed = list.filter(e => !e.item_name || !e.price)
+const productList = list.flatMap(e => {
+    if(e.response.constructor == Array) return e.response
+    else return [e.response]
+})
+productList.forEach(x => {
+    if(typeof x.price === 'string'){
+        x.price = Number(x.price.replace(',', '.'))
+    }
+})
+const filtered = productList.filter(e => !!e.item_name).filter(e => !!e.price)
+const missed = productList.filter(e => !e.item_name || !e.price)
 
 console.log(filtered.length)
 console.log(missed.length)

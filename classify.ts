@@ -221,7 +221,7 @@ try {
 
             const supermarketOutputFilePath = path.join(cwd, `${folder}.out`)
             const doneDir = path.join(fewDir, 'done');
-            const otherDir = path.join(fewDir, 'other');
+            const otherDir = path.join(doneDir, 'other');
 
             const describeQuestion = '// give a json breakdown of the products listed, include them only if there is a price associated, provide the item name, brand, price, a list of dates mentioned, when applicable, include product size, weight or count and the measurement unit associated with this sale, add also a field for any other important text that is found in the advertisement. Only code'
             let fewFiles = fs.readdirSync(path.resolve(cwd, fewDir))
