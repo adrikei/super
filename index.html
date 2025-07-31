@@ -59,6 +59,7 @@
                 maintainAspectRatio: false,
                 scales: {
                     y: {
+                        beginAtZero: true,
                         title: {
                             display: true,
                             text: 'Price'
@@ -105,7 +106,7 @@
             // Auto-select first result
             if (currentData.length > 0) {
                 const firstItem = currentData[0];
-                const imagePath = `input/${firstItem.supermarket}/products/dated/few/done/${firstItem.date}_${firstItem.supermarket} - ${firstItem.hash}.jpg`;
+                const imagePath = `input/${firstItem.supermarket}/products/few/done/${firstItem.date}_${firstItem.supermarket} - ${firstItem.hash}.jpg`;
                 document.getElementById('imageArea').innerHTML = `<img src="${encodeURI(imagePath)}" class="max-w-full h-auto cursor-pointer" onclick="showModal('${encodeURI(imagePath)}')">`;
                 
                 // Highlight first item
@@ -122,7 +123,7 @@
         });
 
         // Load data from file
-        fetch('beirariosm-12b-parsed.out')
+        fetch('dbs.db')
             .then(response => response.text())
             .then(text => {
                 const lines = text.trim().split('\n');
@@ -225,7 +226,7 @@
                 if (currentData[lineIndex]) {
                     const item = currentData[lineIndex];
                     console.log(e.target.innerHTML, item);
-                    const imagePath = `input/${item.supermarket}/products/dated/few/done/${item.date}_${item.supermarket} - ${item.hash}.jpg`;
+                    const imagePath = `input/${item.supermarket}/products/few/done/${item.date}_${item.supermarket} - ${item.hash}.jpg`;
                     document.getElementById('imageArea').innerHTML = `<img src="${encodeURI(imagePath)}" class="max-w-full h-auto cursor-pointer" onclick="showModal('${encodeURI(imagePath)}')">`;
                 }
             }
